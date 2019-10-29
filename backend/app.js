@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 
 const app = express();
-const port = process.env.PORT || "8000";
+const port = process.env.PORT || '8000';
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send('Hello World');
 });
 
