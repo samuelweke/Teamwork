@@ -2,7 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./queries');
 
+const empRoutes = require('./routes/employee');
+
+//Initialize express
 const app = express();
+
 const port = process.env.PORT || '8000';
 
 app.use(bodyParser.json())
@@ -16,7 +20,7 @@ app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
-app.get('/users', db.getUsers)
+app.use('/api/user', empRoutes);
 
 app.listen(port, () => {
   console.log(`Listening to requests on ${port}`);
