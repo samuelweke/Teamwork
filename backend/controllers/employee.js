@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const pool = require('../queries');
 
-exports.createUser = (req, res) => {
+exports.signup = (req, res) => {
   bcrypt.hash(req.body.password, 10).then(
     (hash) => {
       const {
@@ -30,4 +30,20 @@ exports.createUser = (req, res) => {
         });
     },
   );
+};
+
+exports.signin = (req, res) => {
+      pool
+        .query('SELECT email FROM employee WHERE email = $1', [req.body.email])
+        .then((user) => {
+          res.status(201).json({
+            message: 'found',
+            user,
+          });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error,
+          });
+        });
 };
