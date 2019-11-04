@@ -15,7 +15,7 @@ exports.createUser = (req,res) => {
     .query(query)
     .then(() => {
       res.status(201).json({
-        message: 'Post saved successfully'
+        message: 'User created successfully'
       })
     })
     .catch((error) => {
