@@ -3,6 +3,6 @@ const router = express.Router();
 
 const employeeCtrl = require('../controllers/employee');
 
-router.get('/create-user', employeeCtrl.createUser);
+router.post('/create-user', employeeCtrl.createUser);
 
 module.exports = router;
