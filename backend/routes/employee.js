@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const empCtrl = require('../controllers/employee');
+const employeeCtrl = require('../controllers/employee');
 
-router.get('/user', empCtrl.getUsers);
+router.get('/create-user', employeeCtrl.createUser);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const pool = require('../queries');
 
-exports.getUsers = (req,res) => {
+exports.createUser = (req,res) => {
     pool.query('SELECT * FROM reflections', (error, results) => {
         if (error) {
           throw error
