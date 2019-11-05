@@ -43,7 +43,13 @@ exports.signin = (req, res) => {
         });
       }
       bcrypt.compare(req.body.password, user.rows[0].password)
-        
+        .then((valid) => {
+          if (!valid) {
+            return res.status(401).json({
+              error: 'Credentials dont match',
+            });
+          }
+        });
     })
     .catch((error) => {
       res.status(400).json({
