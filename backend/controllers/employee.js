@@ -49,6 +49,10 @@ exports.signin = (req, res) => {
               error: 'Credentials dont match',
             });
           }
+          res.status(201).json({
+              userId: user.rows[0].id,
+              token: 'token',
+          });
         });
     })
     .catch((error) => {
