@@ -42,17 +42,20 @@ exports.signin = (req, res) => {
           error: 'User does not exist',
         });
       }
-      bcrypt.compare(req.body.password, user.rows[0].password)
+      return bcrypt.compare(req.body.password, user.rows[0].password)
         .then((valid) => {
           if (!valid) {
             return res.status(401).json({
               error: 'Credentials dont match',
             });
           }
-          res.status(201).json({
-              userId: user.rows[0].id,
-              token: 'token',
+          return res.status(201).json({
+            userId: user.rows[0].id,
+            token: 'token',
           });
+        })
+        .catch((error) => {
+          res.status(500).json({ error });
         });
     })
     .catch((error) => {
