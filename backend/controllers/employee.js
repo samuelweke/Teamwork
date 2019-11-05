@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const pool = require('../queries');
 
 exports.signup = (req, res) => {
@@ -33,17 +34,20 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-      pool
-        .query('SELECT email FROM employee WHERE email = $1', [req.body.email])
-        .then((user) => {
-          res.status(201).json({
-            message: 'found',
-            user,
-          });
-        })
-        .catch((error) => {
-          res.status(400).json({
-            error,
-          });
+  pool
+    .query('SELECT * FROM employee WHERE email = $1', [req.body.email])
+    .then((user) => {
+      if (user.rows === 0) {
+        return res.status(401).json({
+          error: 'User does not exist',
         });
+      }
+      bcrypt.compare(req.body.password, user.rows[0].password)
+        
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error,
+      });
+    });
 };
