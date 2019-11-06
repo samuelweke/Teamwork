@@ -48,5 +48,21 @@ exports.editArticle = (req, res) => {
 };
 
 exports.deleteArticle = (req, res) => {
-
+  const { id } = req.params;
+  const query = {
+    text: 'DELETE FROM article WHERE id =$1',
+    values: [id],
+  };
+  pool
+    .query(query)
+    .then(() => {
+      res.status(201).json({
+        message: 'Article successfully deleted',
+      });
+    })
+    .catch((error) => {
+      res.status(401).json({
+        error,
+      });
+    });
 };
