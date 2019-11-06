@@ -9,11 +9,11 @@ exports.createArticle = (req, res) => {
   pool
     .query(query)
     .then((response) => {
-      const { id, createdon } = response.rows[0];
+      const { id, created_on } = response.rows[0];
       res.status(201).json({
         message: 'Article successfully posted',
         articleId: id,
-        createdOn: createdon,
+        createdOn: created_on,
         title,
       });
     })
@@ -22,4 +22,31 @@ exports.createArticle = (req, res) => {
         error,
       });
     });
+};
+
+exports.editArticle = (req, res) => {
+  const { id } = req.params;
+  const { title, article } = req.body;
+  const query = {
+    text: 'UPDATE article SET title = $1, article = $2 WHERE id = $3',
+    values: [title, article, id],
+  };
+  pool
+    .query(query)
+    .then(() => {
+      res.status(201).json({
+        message: 'Article successfully updated',
+        title,
+        article,
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error,
+      });
+    });
+};
+
+exports.deleteArticle = (req, res) => {
+
 };
