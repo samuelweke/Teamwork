@@ -21,7 +21,7 @@ exports.signup = (req, res) => {
         .query(query)
         .then(() => {
           res.status(201).json({
-            message: 'User created successfully',
+            message: 'User account successfully created',
           });
         })
         .catch((error) => {
@@ -37,7 +37,7 @@ exports.signin = (req, res) => {
   pool
     .query('SELECT * FROM employee WHERE email = $1', [req.body.email])
     .then((user) => {
-      if (user.rows === 0) {
+      if (user.rows == '') {
         return res.status(401).json({
           error: 'User does not exist',
         });
@@ -49,13 +49,20 @@ exports.signin = (req, res) => {
               error: 'Credentials dont match',
             });
           }
+          const token = jwt.sign(
+            { userId: user.rows[0].id },
+            'RANDOM_TOKEN_KEY',
+            { expiresIn: '24h' },
+          );
           return res.status(201).json({
+            token,
             userId: user.rows[0].id,
-            token: 'token',
           });
         })
         .catch((error) => {
-          res.status(500).json({ error });
+          res.status(500).json({
+            error,
+          });
         });
     })
     .catch((error) => {
