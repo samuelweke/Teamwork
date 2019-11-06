@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 //  Routes
 const userRoutes = require('./routes/employee');
+const articleRoutes = require('./routes/article');
 
 //  Initialize express
 const app = express();
@@ -21,6 +22,7 @@ app.get('/', (request, response) => {
 });
 
 app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/articles', articleRoutes);
 
 app.listen(port, () => {
   console.log(`Listening to requests on ${port}`);
