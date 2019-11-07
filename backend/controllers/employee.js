@@ -45,7 +45,7 @@ exports.signin = (req, res) => {
       return bcrypt.compare(req.body.password, user.rows[0].password)
         .then((valid) => {
           if (!valid) {
-            return res.status(401).json({
+            return res.status(403).json({
               error: 'Credentials dont match',
             });
           }
