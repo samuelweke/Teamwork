@@ -3,8 +3,8 @@ const pool = require('../queries');
 exports.createArticle = (req, res) => {
   const { title, article } = req.body;
   const query = {
-    text: 'INSERT INTO article (title, article) VALUES ($1, $2) RETURNING *',
-    values: [title, article],
+    text: 'INSERT INTO article (title, article, emp_id) VALUES ($1, $2, $3) RETURNING *',
+    values: [title, article, req.user.userId],
   };
   pool
     .query(query)
