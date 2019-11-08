@@ -10,6 +10,6 @@ const multer = require('../middleware/multer-config');
 const gifCtrl = require('../controllers/gif');
 
 
-router.post('/', multer, gifCtrl.uploadGif);
+router.post('/', auth, multer, gifCtrl.uploadGif);
 
 module.exports = router;
