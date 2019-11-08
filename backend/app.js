@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 //  Routes
 const userRoutes = require('./routes/employee');
+const gifRoutes = require('./routes/gif');
 const articleRoutes = require('./routes/article');
 
 //  Initialize express
@@ -22,6 +23,7 @@ app.get('/', (request, response) => {
 });
 
 app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/gif', gifRoutes);
 app.use('/api/v1/articles', articleRoutes);
 
 app.listen(port, () => {

@@ -84,6 +84,8 @@ exports.deleteArticle = (req, res) => {
     .catch((error) => res.status(401).json({ error }));
 };
 
+
+//  Create Comment
 exports.createComment = (req, res) => {
   const query = {
     text: 'INSERT INTO comment (comment, emp_id, article_id) VALUES ($1, $2, $3) RETURNING *',
