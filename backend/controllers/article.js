@@ -37,7 +37,7 @@ exports.editArticle = (req, res) => {
       const query = {
         text: 'UPDATE article SET title = $1, article = $2 WHERE id = $3 RETURNING *',
         values: [title, article, id],
-      }
+      };
       return pool
         .query(query)
         .then(() => {
@@ -48,7 +48,6 @@ exports.editArticle = (req, res) => {
           });
         })
         .catch((error) => res.status(400).json({ error }));
-
     })
     .catch((error) => res.status(401).json({ error }));
 };
@@ -62,7 +61,7 @@ exports.deleteArticle = (req, res) => {
       if (req.user.userId !== articleTable.rows[0].emp_id) {
         return res.status(401).json({ message: 'Cannot delete another user article' });
       }
-      
+
       const query = {
         text: 'DELETE FROM article WHERE id =$1',
         values: [id],
@@ -109,7 +108,7 @@ exports.getOneArticle = (req, res) => {
       FROM article 
       INNER JOIN comment
       ON article.id = comment.article_id
-      WHERE article.id = $1` ,
+      WHERE article.id = $1`,
     values: [id],
   };
   pool
@@ -120,14 +119,12 @@ exports.getOneArticle = (req, res) => {
         createdOn: article.rows[0].created_on,
         title: article.rows[0].title,
         article: article.rows[0].article,
-        comments: article.rows.map(obj => {
-         return {
-            commentId : obj.comment_id,
-            comment : obj.comment,
-            authorId : obj.emp_id,
-          }
-        })
-      })
+        comments: article.rows.map((comment) => ({
+          commentId: comment.comment_id,
+          comment: comment.comment,
+          authorId: comment.emp_id,
+        })),
+      });
     })
     .catch((error) => res.status(401).json({ error }));
 };
