@@ -116,8 +116,16 @@ exports.getOneArticle = (req, res) => {
     .query(query)
     .then((article) => {
       res.status(201).json({
+        id: article.rows[0].id,
+        createdOn: article.rows[0].created_on,
+        title: article.rows[0].title,
+        article: article.rows[0].article,
         comments: article.rows.map(obj => {
-          return obj.comment
+         return {
+            commentId : obj.comment_id,
+            comment : obj.comment,
+            authorId : obj.emp_id,
+          }
         })
       })
     })
