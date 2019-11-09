@@ -2,19 +2,28 @@ const multer = require('multer');
 
 
 const MIME_TYPES = {
-  'image/jpeg': 'jpeg',
-  'image/jpg': 'jpg',
-  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/png': 'png'
 };
+
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, 'images');
   },
   filename: (req, file, callback) => {
-    const name = file.originalname.split(' ').join('_');
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, `${name + Date.now()}.${extension}`);
-  },
+      const name = file.originalname.split(' ').join('_');
+      const extension = MIME_TYPES[file.mimetype];
+      callback(null, `${name + Date.now()}.${extension}`);
+    },
 });
 
-module.exports = multer({ storage }).single('image');
+const fileFilter =  (req, file, callback) => {
+    if (file.mimetype != 'image/gif'){
+      return callback(null, false);
+    }
+    else {
+      return callback(null, true);
+    }
+  }
+
+module.exports = multer({ fileFilter, storage }).single('gif');

@@ -44,11 +44,12 @@ exports.editArticle = (req, res) => {
       if (req.user.userId !== articleTable.rows[0].emp_id) {
         return res.status(401).json({ message: 'Cannot edit another user article' });
       }
+
       const { title, article } = req.body;
       const query = {
         text: 'UPDATE article SET title = $1, article = $2 WHERE id = $3 RETURNING *',
         values: [title, article, id],
-      };
+      }
       return pool
         .query(query)
         .then(() => {
@@ -59,6 +60,7 @@ exports.editArticle = (req, res) => {
           });
         })
         .catch((error) => res.status(400).json({ error }));
+
     })
     .catch((error) => res.status(401).json({ error }));
 };
@@ -72,6 +74,7 @@ exports.deleteArticle = (req, res) => {
       if (req.user.userId !== articleTable.rows[0].emp_id) {
         return res.status(401).json({ message: 'Cannot delete another user article' });
       }
+      
       const query = {
         text: 'DELETE FROM article WHERE id =$1',
         values: [id],
