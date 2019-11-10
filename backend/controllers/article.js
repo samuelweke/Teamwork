@@ -99,16 +99,17 @@ exports.createComment = (req, res) => {
     })
     .catch((error) => res.status(401).json({ error }));
 };
+
 // Get a single article by ID
 exports.getOneArticle = (req, res) => {
   const { id } = req.params;
   const query = {
     text: `SELECT article.id, article.created_on, article.title, article.article,
-      comment.comment_id, comment.comment, comment.emp_id
-      FROM article 
-      INNER JOIN comment
-      ON article.id = comment.article_id
-      WHERE article.id = $1`,
+           comment.comment_id, comment.comment, comment.emp_id
+            FROM article 
+              INNER JOIN comment
+              ON article.id = comment.article_id
+                WHERE article.id = $1`,
     values: [id],
   };
   pool

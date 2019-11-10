@@ -8,11 +8,12 @@ cloudinary.config({
 });
 
 exports.uploadGif = (req, res) => {
+  console.log(req.file)
   cloudinary.uploader.upload(req.file.path)
     .then((gif) => {
       const query = {
-        text: 'INSERT INTO gif (url, title, emp_id) VALUES ($1, $2, $3) RETURNING *',
-        values: [gif.url, req.body.title, req.user.userId],
+        text: 'INSERT INTO gif (cloudinary_id, url, title, emp_id) VALUES ($1, $2, $3, $4) RETURNING *',
+        values: [gif.public_id, gif.url, req.body.title, req.user.userId],
       };
       return pool
         .query(query)
@@ -26,5 +27,25 @@ exports.uploadGif = (req, res) => {
         })
         .catch((error) => res.status(401).json({ error }));
     })
-    .then((error) => res.status(401).json({ error }));
+    .then(error => res.status(401).json({ error }));
+};
+
+exports.deleteGif = (req, res) => {
+  pool
+    .query('SELECT * FROM gif WHERE id = $1', [req.params.id])
+    .then((gifTable) =>{
+      cloudinary.uploader.destroy(gifTable.rows[0].cloudinary_id)
+        .then(() =>{
+          pool
+            .query('DELETE FROM gif WHERE id = $1', [req.params.id])
+            .then(()=>{
+              res.status(201).json({
+                message: 'gif post successfully deleted'
+              });
+            })
+            .catch(error => res.status(401).json({error}))
+        })
+        .catch(error => res.status(401).json({error }));
+    })
+    .catch(error => res.status(401).json({error}))
 };

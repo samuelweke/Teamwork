@@ -11,5 +11,6 @@ const gifCtrl = require('../controllers/gif');
 
 
 router.post('/', auth, multer, gifCtrl.uploadGif);
+router.delete('/:id', auth, multer, gifCtrl.deleteGif);
 
 module.exports = router;
