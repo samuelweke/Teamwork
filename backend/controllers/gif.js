@@ -49,3 +49,27 @@ exports.deleteGif = (req, res) => {
     })
     .catch((error) => res.status(401).json({ error }));
 };
+
+exports.postComment = (req, res) => {
+  const query = {
+    text: `INSERT INTO gif_comment (comment, emp_id, gif_id) VALUES($1, $2, $3) RETURNING *`,
+    values: [req.body.comment, req.user.userId, req.params.id],
+  };
+  pool
+    .query(query)
+    .then(gifCommentTable => {
+      const gifId = gifCommentTable.rows[0].gif_id;
+     return pool
+        .query('SELECT * FROM gif WHERE id = $1', [gifId])
+        .then((gifTable) => {
+          res.status(201).json({
+            message: 'Comment Successfully Created',
+            createdOn: gifCommentTable.rows[0].created_on,
+            gifTitle: gifTable.rows[0].title,
+            comment: req.body.comment,
+          });
+        })
+        .catch((error) => res.status(401).json({ error }));
+    })
+    .catch(error => res.status(401).json({error}));
+};
