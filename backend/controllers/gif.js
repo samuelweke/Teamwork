@@ -67,9 +67,37 @@ exports.postComment = (req, res) => {
             createdOn: gifCommentTable.rows[0].created_on,
             gifTitle: gifTable.rows[0].title,
             comment: req.body.comment,
-          });
+          });e
         })
         .catch((error) => res.status(401).json({ error }));
     })
     .catch((error) => res.status(401).json({ error }));
 };
+
+exports.getOneGif = (req, res) => {
+  const { id } = req.params;
+  const query = {
+    text: `SELECT gif.id, gif.created_on, gif.title, gif.url, gif_comment.comment_id, gif_comment.comment, gif_comment.emp_id
+            FROM gif 
+              INNER JOIN gif_comment
+              ON gif.id = gif_comment.gif_id
+                WHERE gif.id = $1;`,
+    values: [id],
+  };
+  pool
+    .query(query)
+    .then((gif) => {
+      res.status(201).json({
+        id: gif.rows[0].id,
+        createdOn: gif.rows[0].created_on,
+        title: gif.rows[0].title,
+        url: gif.rows[0].url,
+        comments: gif.rows.map((comment) => ({
+          commentId: comment.comment_id,
+          comment: comment.comment,
+          authorId: comment.emp_id,
+        })),
+      });
+    })
+    .catch((error) => res.status(401).json({ error }));
+}
