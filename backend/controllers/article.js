@@ -83,7 +83,7 @@ exports.createComment = (req, res) => {
   };
   pool
     .query(query)
-    .then((commentTable) => {
+    .then(commentTable => {
       const articleId = commentTable.rows[0].article_id;
       return pool.query('SELECT * FROM article WHERE id = $1', [articleId])
         .then((articleTable) => {
