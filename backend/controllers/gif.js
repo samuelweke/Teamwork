@@ -1,4 +1,7 @@
 const cloudinary = require('cloudinary').v2;
+const dataUri = require('datauri');
+const path = require('path');
+
 const pool = require('../queries');
 
 cloudinary.config({
@@ -9,7 +12,11 @@ cloudinary.config({
 
 // Upload Gif
 exports.uploadGif = (req, res) => {
-  cloudinary.uploader.upload(req.file.path, { folder: "Teamwork/"})
+  const DataUri = new dataUri();
+  const datauri = req => DataUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
+
+  const imagePath = datauri(req).content
+  cloudinary.uploader.upload(imagePath, { folder: "Teamwork/"})
     .then((gif) => {
       const query = {
         text: 'INSERT INTO gif (cloudinary_id, url, title, user_id) VALUES ($1, $2, $3, $4) RETURNING *',
