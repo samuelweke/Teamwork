@@ -8,7 +8,6 @@ const auth = require('../middleware/auth');
 router.post('/', auth, articleCtrl.createArticle);
 router.patch('/:id', auth, articleCtrl.editArticle);
 router.delete('/:id', auth, articleCtrl.deleteArticle);
-
 router.post('/:id/comment', auth, articleCtrl.createComment);
 router.get('/:id', auth, articleCtrl.getOneArticle);
 

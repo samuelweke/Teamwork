@@ -9,7 +9,7 @@ exports.createArticle = (req, res) => {
   };
   pool
     .query(query)
-    .then(response => {
+    .then((response) => {
       res.status(201).json({
         message: 'Article successfully posted',
         articleId: response.rows[0].article_id,
@@ -17,7 +17,7 @@ exports.createArticle = (req, res) => {
         title,
       });
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch((error) => res.status(400).json({ error }));
 };
 
 
@@ -46,9 +46,9 @@ exports.editArticle = (req, res) => {
             article,
           });
         })
-        .catch(error => res.status(400).json({ error }));
+        .catch((error) => res.status(400).json({ error }));
     })
-    .catch(error => res.status(401).json({ error }));
+    .catch((error) => res.status(401).json({ error }));
 };
 
 //  Delete an article
@@ -56,16 +56,16 @@ exports.deleteArticle = (req, res) => {
   const { id } = req.params;
   pool
     .query('SELECT * FROM article WHERE article_id =$1', [id])
-    .then(articleTable => {
+    .then((articleTable) => {
       if (req.user.userId !== articleTable.rows[0].user_id) {
         return res.status(401).json({ message: 'Cannot delete another user article' });
       }
       return pool
         .query('DELETE FROM article WHERE article_id =$1', [id])
         .then(() => res.status(201).json({ message: 'Article successfully deleted' }))
-        .catch(error => res.status(400).json({ error }));
+        .catch((error) => res.status(400).json({ error }));
     })
-    .catch(error => res.status(401).json({ error }));
+    .catch((error) => res.status(401).json({ error }));
 };
 
 
@@ -77,22 +77,22 @@ exports.createComment = (req, res) => {
   };
   pool
     .query(query)
-    .then(commentTable => {
+    .then((commentTable) => {
       const articleId = commentTable.rows[0].article_id;
       return pool.query('SELECT * FROM article WHERE article_id = $1', [articleId])
-        .then(articleTable => {
+        .then((articleTable) => {
           const { article, title } = articleTable.rows[0];
           res.status(201).json({
             message: 'Comment Successfully Created',
             createdOn: commentTable.rows[0].created_on,
             articleTitle: title,
-            article: article,
+            article,
             comment: req.body.comment,
           });
         })
-        .catch(error => res.status(400).json({ error }));
+        .catch((error) => res.status(400).json({ error }));
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch((error) => res.status(400).json({ error }));
 };
 
 // Get a single article by ID
@@ -109,18 +109,18 @@ exports.getOneArticle = (req, res) => {
   };
   pool
     .query(query)
-    .then(article => {
+    .then((article) => {
       res.status(201).json({
         id: article.rows[0].article_id,
         createdOn: article.rows[0].created_on,
         title: article.rows[0].title,
         article: article.rows[0].article,
-        comments: article.rows.map(comment => ({
+        comments: article.rows.map((comment) => ({
           commentId: comment.comment_id,
           comment: comment.comment,
           authorId: comment.user_id,
         })),
       });
     })
-    .catch(error => res.status(401).json({ error }));
+    .catch((error) => res.status(401).json({ error }));
 };

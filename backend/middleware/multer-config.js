@@ -24,4 +24,4 @@ const fileFilter = (req, file, callback) => {
   return callback(null, true);
 };
 
-module.exports = multer({ fileFilter, storage }).single('gif');
+module.exports = multer({ fileFilter, storage }).single('image');

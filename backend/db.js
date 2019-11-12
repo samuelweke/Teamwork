@@ -84,7 +84,7 @@ const createArticleCommentTable = () => {
     });
 };
 
-//  DROP article_comment TABLE 
+//  DROP article_comment TABLE
 const dropArticlesCommentsTable = () => {
   const queryText = 'DROP TABLE IF EXISTS article_comments';
   pool.query(queryText)

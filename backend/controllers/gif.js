@@ -7,17 +7,17 @@ cloudinary.config({
   api_secret: '6ALBNt-9bsE8ZR2jjtiwxaSiuh0',
 });
 
+// Upload Gif
 exports.uploadGif = (req, res) => {
-  console.log(req.file);
-  cloudinary.uploader.upload(req.file.path)
+  cloudinary.uploader.upload(req.file.path, { folder: "Teamwork/"})
     .then((gif) => {
       const query = {
-        text: 'INSERT INTO gif (cloudinary_id, url, title, emp_id) VALUES ($1, $2, $3, $4) RETURNING *',
+        text: 'INSERT INTO gif (cloudinary_id, url, title, user_id) VALUES ($1, $2, $3, $4) RETURNING *',
         values: [gif.public_id, gif.url, req.body.title, req.user.userId],
       };
       return pool
         .query(query)
-        .then((gifTable) => {
+        .then(gifTable => {
           res.status(201).json({
             message: 'GIF image successfully posted',
             createdOn: gifTable.rows[0].created_on,
@@ -25,79 +25,84 @@ exports.uploadGif = (req, res) => {
             imageUrl: gifTable.rows[0].url,
           });
         })
-        .catch((error) => res.status(401).json({ error }));
+        .catch(error => res.status(401).json({ error }));
     })
-    .then((error) => res.status(401).json({ error }));
+    .then(error => res.status(401).json({ error }));
 };
 
+// Delete a gif
 exports.deleteGif = (req, res) => {
   pool
-    .query('SELECT * FROM gif WHERE id = $1', [req.params.id])
-    .then((gifTable) => {
+    .query('SELECT * FROM gif WHERE gif_id = $1', [req.params.id])
+    .then(gifTable => {
+      if (req.user.userId !== gifTable.rows[0].user_id) {
+        return res.status(401).json({ message: 'Cannot delete another user gif' });
+      }
       cloudinary.uploader.destroy(gifTable.rows[0].cloudinary_id)
         .then(() => {
           pool
-            .query('DELETE FROM gif WHERE id = $1', [req.params.id])
+            .query('DELETE FROM gif WHERE gif_id = $1', [req.params.id])
             .then(() => {
               res.status(201).json({
                 message: 'gif post successfully deleted',
               });
             })
-            .catch((error) => res.status(401).json({ error }));
+            .catch(error => res.status(401).json({ error }));
         })
-        .catch((error) => res.status(401).json({ error }));
+        .catch(error => res.status(401).json({ error }));
     })
-    .catch((error) => res.status(401).json({ error }));
+    .catch(error => res.status(401).json({ error }));
 };
 
+// Post comment 
 exports.postComment = (req, res) => {
   const query = {
-    text: 'INSERT INTO gif_comment (comment, emp_id, gif_id) VALUES($1, $2, $3) RETURNING *',
+    text: 'INSERT INTO gif_comment (comment, user_id, gif_id) VALUES($1, $2, $3) RETURNING *',
     values: [req.body.comment, req.user.userId, req.params.id],
   };
   pool
     .query(query)
-    .then((gifCommentTable) => {
+    .then(gifCommentTable => {
       const gifId = gifCommentTable.rows[0].gif_id;
       return pool
-        .query('SELECT * FROM gif WHERE id = $1', [gifId])
-        .then((gifTable) => {
+        .query('SELECT * FROM gif WHERE gif_id = $1', [gifId])
+        .then(gifTable => {
           res.status(201).json({
             message: 'Comment Successfully Created',
             createdOn: gifCommentTable.rows[0].created_on,
             gifTitle: gifTable.rows[0].title,
             comment: req.body.comment,
-          });e
+          }); 
         })
-        .catch((error) => res.status(401).json({ error }));
+        .catch(error => res.status(401).json({ error }));
     })
-    .catch((error) => res.status(401).json({ error }));
+    .catch(error => res.status(401).json({ error }));
 };
 
+// Get a single gif
 exports.getOneGif = (req, res) => {
-  const { id } = req.params;
   const query = {
-    text: `SELECT gif.id, gif.created_on, gif.title, gif.url, gif_comment.comment_id, gif_comment.comment, gif_comment.emp_id
+    text: `SELECT gif.gif_id, gif.created_on, gif.title, gif.url, gif_comment.comment_id, gif_comment.comment, gif_comment.user_id
             FROM gif 
               INNER JOIN gif_comment
-              ON gif.id = gif_comment.gif_id
-                WHERE gif.id = $1;`,
-    values: [id],
+              ON gif.gif_id = gif_comment.gif_id
+                WHERE gif.gif_id = $1;`,
+    values: [req.params.id],
   };
   pool
     .query(query)
-    .then((gif) => {
+    .then(gif => {
       res.status(201).json({
-        id: gif.rows[0].id,
+        id: gif.rows[0].gif_id,
         createdOn: gif.rows[0].created_on,
         title: gif.rows[0].title,
         url: gif.rows[0].url,
         comments: gif.rows.map((comment) => ({
           commentId: comment.comment_id,
           comment: comment.comment,
-          authorId: comment.emp_id,
+          authorId: comment.user_id,
         })),
       });
     })
-    .catch((error) => res.status(401).json({ error }));
-}
+    .catch(error => res.status(401).json({ error }));
+};
