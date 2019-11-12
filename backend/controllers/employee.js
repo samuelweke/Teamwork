@@ -6,22 +6,29 @@ exports.signup = (req, res) => {
   bcrypt.hash(req.body.password, 10).then(
     (hash) => {
       const {
-        firstname, lastname, email,
+        firstName, lastName, email,
         gender, jobRole, department, address,
       } = req.body;
 
       const query = {
         text: `INSERT INTO 
       employee (firstname, lastname, email, password, gender, job_role, department, address) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        values: [firstname, lastname, email, hash, gender, jobRole, department, address],
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        values: [firstName, lastName, email, hash, gender, jobRole, department, address],
       };
 
       pool
         .query(query)
-        .then(() => {
-          res.status(201).json({
+        .then((user) => {
+          const token = jwt.sign(
+            { userId: user.rows[0].id },
+            'RANDOM_TOKEN_KEY',
+            { expiresIn: '24h' },
+          );
+          return res.status(201).json({
             message: 'User account successfully created',
+            token,
+            userId: user.rows[0].id,
           });
         })
         .catch((error) => {
