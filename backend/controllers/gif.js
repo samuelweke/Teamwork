@@ -13,21 +13,19 @@ cloudinary.config({
 // Upload Gif
 exports.uploadGif = (req, res) => {
   const DataUri = new Datauri();
-  const datauri = (request) => {
-    return DataUri.format(path.extname(request.file.originalname).toString(),
-     request.file.buffer);
-  };
+  const datauri = (request) => DataUri.format(path.extname(request.file.originalname).toString(),
+    request.file.buffer);
   const imagePath = datauri(req).content;
 
   cloudinary.uploader.upload(imagePath, { folder: 'Teamwork/' })
-    .then(gif => {
+    .then((gif) => {
       const query = {
         text: 'INSERT INTO gif (cloudinary_id, url, title, user_id) VALUES ($1, $2, $3, $4) RETURNING *',
         values: [gif.public_id, gif.url, req.body.title, req.user.userId],
       };
       return pool
         .query(query)
-        .then(gifTable => {
+        .then((gifTable) => {
           res.status(201).json({
             message: 'GIF image successfully posted',
             createdOn: gifTable.rows[0].created_on,
@@ -35,9 +33,9 @@ exports.uploadGif = (req, res) => {
             imageUrl: gifTable.rows[0].url,
           });
         })
-        .catch(error => res.status(401).json({ error }));
+        .catch((error) => res.status(401).json({ error }));
     })
-    .then(error => res.status(500).json({ error }));
+    .then((error) => res.status(500).json({ error }));
 };
 
 // Delete a gif
@@ -101,7 +99,7 @@ exports.getOneGif = (req, res) => {
   };
   pool
     .query(query)
-    .then(gif => {
+    .then((gif) => {
       res.status(201).json({
         id: gif.rows[0].gif_id,
         createdOn: gif.rows[0].created_on,
@@ -114,5 +112,5 @@ exports.getOneGif = (req, res) => {
         })),
       });
     })
-    .catch(error => res.status(401).json({ error }));
+    .catch((error) => res.status(401).json({ error }));
 };
