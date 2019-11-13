@@ -22,7 +22,7 @@ exports.signup = (req, res) => {
         .then((user) => {
           const token = jwt.sign(
             { userId: user.rows[0].id },
-            'RANDOM_TOKEN_KEY',
+            process.env.JWT_SECRET_KEY,
             { expiresIn: '24h' },
           );
           return res.status(201).json({
@@ -58,7 +58,7 @@ exports.signin = (req, res) => {
           }
           const token = jwt.sign(
             { userId: user.rows[0].id },
-            'RANDOM_TOKEN_KEY',
+            process.env.JWT_SECRET_KEY,
             { expiresIn: '24h' },
           );
           return res.status(201).json({
