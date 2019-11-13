@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 //  Routes
 const userRoutes = require('./routes/employee');
 const gifRoutes = require('./routes/gif');
@@ -10,7 +13,7 @@ const feedRoutes = require('./routes/feed');
 //  Initialize express
 const app = express();
 
-const port = process.env.PORT || '8000';
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 app.use(
@@ -18,10 +21,6 @@ app.use(
     extended: true,
   }),
 );
-
-app.get('/', (request, response) => {
-  response.json({ info: 'Node.js, Express, and Postgres API' });
-});
 
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/gif', gifRoutes);
