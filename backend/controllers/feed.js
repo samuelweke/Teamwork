@@ -20,7 +20,6 @@ exports.getFeed = (req, res) => {
           createdOn: feed.created_on,
           title: feed.title,
           article: feed.post,
-          article: feed.post,
           authorId: feed.user_id,
         })),
       );
