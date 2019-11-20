@@ -23,6 +23,10 @@ app.use(
   }),
 );
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to Teamwork Api' });
+});
+
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/gif', gifRoutes);
 app.use('/api/v1/articles', articleRoutes);
