@@ -13,7 +13,7 @@ const createUsersTable = () => {
       job_role VARCHAR(65),
       department VARCHAR(65),
       address VARCHAR(128),
-      createdOn TIMESTAMP DEFAULT Now() ,
+      createdOn TIMESTAMP DEFAULT Now() 
     )`;
   pool.query(queryText)
     .then(() => pool.end())
@@ -82,7 +82,6 @@ const createGifCommentTable = () => {
 };
 
 pool.on('remove', () => {
-  console.log('client removed');
   process.exit(0);
 });
 
