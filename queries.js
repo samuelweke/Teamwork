@@ -10,7 +10,7 @@ require('dotenv').config();
 // });
 
 const pool = new Pool({
-  connectionString: process.env.HEROKU_DB_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: true,
 });
 
