@@ -20,6 +20,7 @@ exports.signup = (req, res) => {
       pool
         .query(query)
         .then((user) => {
+          console.log(user);
           const token = jwt.sign(
             { userId: user.rows[0].id },
             process.env.JWT_SECRET_KEY,
