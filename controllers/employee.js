@@ -25,7 +25,7 @@ exports.signup = (req, res) => {
             process.env.JWT_SECRET_KEY,
             { expiresIn: '24h' },
           );
-          return res.status(201).json({
+          return res.status(200).json({
             message: 'User account successfully created',
             token,
             userId: user.rows[0].id,

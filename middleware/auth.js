@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     }
   } catch (error) {
     res.status(401).json({
-      error: 'Invalid Request',
+      error: 'User must be authenticated',
     });
   }
 };
