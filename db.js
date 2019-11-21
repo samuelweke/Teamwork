@@ -9,7 +9,7 @@ const createUsersTable = () => {
       lastname VARCHAR(65),
       email VARCHAR(100) NOT NULL UNIQUE,
       password VARCHAR(100) NOT NULL,
-      gender VARCHAR(1),
+      gender VARCHAR(7),
       job_role VARCHAR(65),
       department VARCHAR(65),
       address VARCHAR(128),

@@ -31,9 +31,9 @@ exports.signup = (req, res) => {
             userId: user.rows[0].id,
           });
         })
-        .catch(() => {
+        .catch((error) => {
           res.status(400).json({
-            error: 'there is an error ',
+            error,
           });
         });
     },
