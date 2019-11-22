@@ -10,7 +10,7 @@ require('dotenv').config();
 // });
 
 const pool = new Pool({
-  connectionString: 'postgres://khsondrikuwcmg:17e2c93bd03006877e1cfb8c8b9b8391766a9f70a8cb12f19dbb7a547e061620@ec2-54-227-249-108.compute-1.amazonaws.com:5432/d57dbsf1ee8lhr',
+  connectionString: process.env.DATABASE_URL,
   ssl: true,
 });
 
