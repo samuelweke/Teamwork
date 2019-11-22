@@ -20,14 +20,14 @@ exports.signup = (req, res) => {
       pool
         .query(query)
         .then((user) => {
-          // const token = jwt.sign(
-          //   { userId: user.rows[0].id },
-          //   process.env.JWT_SECRET_KEY,
-          //   { expiresIn: '24h' },
-          // );
-          res.status(200).json({
+          const token = jwt.sign(
+            { userId: user.rows[0].id },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: '24h' },
+          );
+          return res.status(200).json({
             message: 'User account successfully created',
-            // token,
+            token,
             userId: user.rows[0].id,
           });
         })
