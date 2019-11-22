@@ -22,7 +22,7 @@ exports.signup = (req, res) => {
         .then((user) => {
           const token = jwt.sign(
             { userId: user.rows[0].id },
-            process.env.JWT_SECRET_KEY,
+            'process.env.JWT_SECRET_KEY',
             { expiresIn: '24h' },
           );
           res.status(200).json({
