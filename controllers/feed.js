@@ -16,7 +16,7 @@ exports.getFeed = (req, res) => {
     .then((feedTable) => {
       res.status(201).json({
         status: 'success',
-        data: [
+        data:
           feedTable.rows.map((feed) => ({
             id: feed.id,
             createdOn: feed.created_on,
@@ -24,7 +24,6 @@ exports.getFeed = (req, res) => {
             article: feed.post,
             authorId: feed.user_id,
           })),
-        ],
       });
     })
     .catch((error) => res.status(401).json({ error }));
