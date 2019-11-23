@@ -14,15 +14,17 @@ exports.getFeed = (req, res) => {
   pool
     .query(query)
     .then((feedTable) => {
-      res.status(201).json(
-        feedTable.rows.map((feed) => ({
-          id: feed.id,
-          createdOn: feed.created_on,
-          title: feed.title,
-          article: feed.post,
-          authorId: feed.user_id,
-        })),
-      );
+      res.status(201).json({
+        status: 'success',
+        data:
+          feedTable.rows.map((feed) => ({
+            id: feed.id,
+            createdOn: feed.created_on,
+            title: feed.title,
+            article: feed.post,
+            authorId: feed.user_id,
+          })),
+      });
     })
     .catch((error) => res.status(401).json({ error }));
 };
