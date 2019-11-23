@@ -16,11 +16,14 @@ exports.getFeed = (req, res) => {
     .then((feedTable) => {
       res.status(201).json(
         feedTable.rows.map((feed) => ({
-          id: feed.id,
-          createdOn: feed.created_on,
-          title: feed.title,
-          article: feed.post,
-          authorId: feed.user_id,
+          status: 'success',
+          data: {
+            id: feed.id,
+            createdOn: feed.created_on,
+            title: feed.title,
+            article: feed.post,
+            authorId: feed.user_id,
+          },
         })),
       );
     })
