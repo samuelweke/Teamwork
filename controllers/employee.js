@@ -26,9 +26,12 @@ exports.signup = (req, res) => {
             { expiresIn: '24h' },
           );
           res.status(200).json({
-            message: 'User account successfully created',
-            token,
-            userId: user.rows[0].id,
+            status: 'success',
+            data: {
+              message: 'User account successfully created',
+              token,
+              userId: user.rows[0].id,
+            },
           });
         })
         .catch((error) => {
@@ -62,8 +65,11 @@ exports.signin = (req, res) => {
             { expiresIn: '24h' },
           );
           return res.status(201).json({
-            token,
-            userId: user.rows[0].id,
+            status: 'success',
+            data: {
+              token,
+              userId: user.rows[0].id,
+            },
           });
         })
         .catch((error) => {
